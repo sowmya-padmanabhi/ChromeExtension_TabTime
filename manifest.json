@@ -1,0 +1,27 @@
+  {
+    "name": "Tab Time Tracker",
+    "version": "1.0",
+    "description": "Build an Extension!",
+    "permissions": ["tabs"],
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+    },
+    "browser_action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "images/timerLogo.png",
+        "32": "images/timerLogo.png",
+        "48": "images/timerLogo.png",
+        "128": "images/timerLogo.png"
+      }
+
+    },
+    "icons": {
+      "16": "images/timerLogo.png",
+      "32": "images/timerLogo.png",
+      "48": "images/timerLogo.png",
+      "128": "images/timerLogo.png"
+    },
+    "manifest_version": 2
+  }
