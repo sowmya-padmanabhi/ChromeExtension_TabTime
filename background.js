@@ -1,6 +1,8 @@
 let prevTabId = null;
 var key;
 
+//Function is called every 1 second	
+//For the current tab, shows how much time has elapsed as this is increasing every 1 second when on active tab
 setInterval(function(){
   if (key) {
     chrome.storage.sync.get([key], function(value) {
@@ -36,8 +38,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
       chrome.storage.sync.get([key], function(value) {
         if (value[key] !== undefined) {
           //This tab had previously been opened
-          value[key].title = tab.title;
-          value[key].favIconUrl = tab.favIconUrl,
+          value[key].favIconUrl = tab.favIconUrl ? tab.favIconUrl : "noImageFound.png";
           console.log('Tab '+key+' : '+value[key].title+' previously existed')
           value[key].start_time = (new Date()).toJSON()
           console.log('Tab '+key+' start timestamp is set to: '+value[key].start_time)
@@ -49,9 +50,8 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
           console.log('Tab '+key+' being opened for the first time')
           value[key] = { 
             'index': tab.index,
-            'title': tab.title,
-            'favicon': tab.favIconUrl,
-            'start_time': (new Date()).toJSON(), 
+            'favIconUrl': tab.favIconUrl ? tab.favIconUrl : "noImageFound.png",
+            'start_time': (new Date()).toJSON(),
             duration: 0
           }
           chrome.storage.sync.set({ [key]: value[key] }, function() {
@@ -64,28 +64,22 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
 
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
-  if(tab.status == 'complete' && tab.url!= undefined){
-    console.log("tab load complete", tab.url);
-  }
-  
-  if(changeInfo.url){
-    console.log('New url in the same tab opened: ' + changeInfo.url);
-
-    key = String(tab.id);
+  key = String(tab.id);
+  if(tab.status == 'complete'){
+    let newHostname = new URL(tab.url).hostname;
     chrome.storage.sync.get([key], function(value) {
-      value[key] = { 
-        'index': tab.index,
-        'title': tab.title,
-        'favicon': tab.favicon ,
-        'start_time': (new Date()).toJSON(), 
-        duration: 0
+      let oldHostname = value[key].url ? new URL(value[key].url).hostname : undefined;
+      //update only if hostnames are different and start
+      if (newHostname !== oldHostname) {
+        console.log('New url in the same tab opened: ' + tab.url);
+        value[key].start_time = (new Date()).toJSON(); 
+        value[key].duration = 0;
+        value[key].favIconUrl = tab.favIconUrl ? tab.favIconUrl : "noImageFound.png";
+        chrome.storage.sync.set({ [key]: value[key] }, function() {
+          console.log('Key '+key+' value, title: '+tab.title+' stored in storage');
+        });
       }
-
-      chrome.storage.sync.set({ [key]: value[key] }, function() {
-        console.log('Key '+key+' value, title: '+tab.title+' stored in storage');
-      });
     });
-
   }
 });
 
