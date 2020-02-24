@@ -1,7 +1,7 @@
   {
     "name": "Tab Time Tracker",
     "version": "1.0",
-    "description": "Build an Extension!",
+    "description": "Tab Time Extension!",
     "permissions": ["activeTab","declarativeContent","storage", "tabs"],
     "background": {
       "scripts": ["background.js"],
