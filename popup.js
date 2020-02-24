@@ -24,9 +24,9 @@ chrome.tabs.query({}, function(tabs){
         Object.keys(tabIds).sort().forEach(tabIndex => {
             d = new Date(null);
             key = tabIds[tabIndex];
-            let image = value[key].favIconUrl;
-            let url = value[key].url;
             if (value[key]) {
+                let image = value[key].favIconUrl;
+                let url = value[key].url;
                 if (key === active_key) {
                     d.setMilliseconds(value[key].duration + (new Date() - new Date(value[key].start_time)));
                     displayValue = d.toISOString().substr(11,8);
