@@ -1,11 +1,10 @@
 let prevTabId = null;
 var key;
 
-//Function is called every 1 second
-//For the current tab, shows how much time has elapsed as this is increasing every 1 second when on active tab
 setInterval(function(){
   if (key) {
     chrome.storage.sync.get([key], function(value) {
+      // console.log('what is key ' + value[key].title);
       console.log('Time spent on current tab '+value[key].title+' : '+(value[key].duration + (new Date() - new Date(value[key].start_time))));
     });
   }
@@ -13,6 +12,7 @@ setInterval(function(){
 
 chrome.tabs.onActivated.addListener(function(activeInfo){
   //reset duration whenever a new tab is activated
+
   //fetch tab url using activeInfo.tabId
   chrome.tabs.get(activeInfo.tabId, function(tab){
       // if prevTabId is not null, calculate the duration of that tab before moving on the currently activated tab
@@ -36,6 +36,8 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
       chrome.storage.sync.get([key], function(value) {
         if (value[key] !== undefined) {
           //This tab had previously been opened
+          value[key].title = tab.title;
+          value[key].favIconUrl = tab.favIconUrl,
           console.log('Tab '+key+' : '+value[key].title+' previously existed')
           value[key].start_time = (new Date()).toJSON()
           console.log('Tab '+key+' start timestamp is set to: '+value[key].start_time)
@@ -65,10 +67,35 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
   if(tab.status == 'complete' && tab.url!= undefined){
     console.log("tab load complete", tab.url);
   }
+  
+  if(changeInfo.url){
+    console.log('New url in the same tab opened: ' + changeInfo.url);
+
+    key = String(tab.id);
+    chrome.storage.sync.get([key], function(value) {
+      value[key] = { 
+        'index': tab.index,
+        'title': tab.title,
+        'favicon': tab.favicon ,
+        'start_time': (new Date()).toJSON(), 
+        duration: 0
+      }
+
+      chrome.storage.sync.set({ [key]: value[key] }, function() {
+        console.log('Key '+key+' value, title: '+tab.title+' stored in storage');
+      });
+    });
+
+  }
 });
+
 
 chrome.tabs.onRemoved.addListener((tabId, deletedTab)=>{
   console.log(`Tab index: ${tabId} is closing. ${deletedTab} is now deleted`);
+  key = String(tabId);
+  chrome.storage.sync.remove([key], function() {
+      console.log('Removed tab id '+key+' from storage');
+  });
 });
 
 chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
