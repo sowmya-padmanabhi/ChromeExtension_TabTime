@@ -38,4 +38,4 @@ Your extension should now be added and you should be able to see the icon
 ![TabTimer Logo](/images/timerLogoForReadME.png) 
 
 #### Demo video of Tab Time Extension
-![image](/images/TabTimerGif.gif)
+![image](/images/TabTimerDemoGif.gif)
