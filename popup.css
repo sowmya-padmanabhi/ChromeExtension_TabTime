@@ -22,8 +22,7 @@ body {
 }
 
 div.wrapper {
-  margin: 20px auto;
-  width: 350px;
+  width: 300px;
 }
 
 nav.vertical {
@@ -62,8 +61,8 @@ h3 {
 }
 
 a {
-  background-color: rgb(255,255,255);
-  border-bottom: 1px solid rgba(0,0,0,.05);
+  background: linear-gradient(2deg, #e8bad354, transparent);
+  border-bottom: 1px solid rgba(248, 244, 244, 0.05);
   color: #333331;
   display: block;
   font-size: 1.1rem;
@@ -85,9 +84,11 @@ ul {
 }
 
 a:hover {
-  background-color: rgba(145, 76, 102, 0.08);
+  background-color: #e607761c;
   cursor: pointer;
+  transform: scale(1.2);
 }
+
 
 div{
   background-color: rgb(255,255,255);
