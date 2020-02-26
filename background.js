@@ -46,8 +46,11 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
           });
 
         } else {
+          //This tab is being opened for the first time.
           console.log('Tab '+key+' being opened for the first time')
           value[key] = { 
+            'title':tab.title,
+            'url':tab.url,
             'index': tab.index,
             'favIconUrl': tab.favIconUrl ? tab.favIconUrl : "imageNotFound.png",
             'start_time': (new Date()).toJSON(),
